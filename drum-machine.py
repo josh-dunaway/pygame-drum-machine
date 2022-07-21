@@ -1,4 +1,3 @@
-from cgitb import grey
 import pygame
 from pygame import mixer
 pygame.init()
