@@ -27,7 +27,7 @@ clicked = [[-1 for _ in range(beats)] for _ in range(instruments)]
 bpm = 240
 playing = True
 active_length = 0
-active_beat = 1
+active_beat = 0
 beat_changed = True
 
 # load in sounds
@@ -41,11 +41,13 @@ tom = mixer.Sound('sounds\\tom.WAV')
 # pygame defaults to 8 channels which could lead to issues later
 pygame.mixer.set_num_channels(instruments * 3)
 
+
 def play_notes():
     for i in range(len(clicked)):
         if clicked[i][active_beat] == 1:
             if i == 0:
                 hi_hat.play()
+                print('hi_hat play')
             if i == 1:
                 snare.play()
             if i == 2:
@@ -56,6 +58,7 @@ def play_notes():
                 clap.play()
             if i == 5:
                 tom.play()
+
 
 def draw_grid(clicked, beat):
     left_box = pygame.draw.rect(screen, gray, [0, 0, 200, HEIGHT - 195], 5)
@@ -92,7 +95,8 @@ def draw_grid(clicked, beat):
                 [i * ((WIDTH - 200) // beats) + 205, (j * 100) + 5,
                     ((WIDTH - 200) // beats) - 10, ((HEIGHT - 200) // instruments) - 10],
                 0,
-                3)
+                3
+            )
             # drum pad button inner highlight
             pygame.draw.rect(
                 screen,
@@ -100,7 +104,8 @@ def draw_grid(clicked, beat):
                 [i * ((WIDTH - 200) // beats) + 200, (j * 100),
                     ((WIDTH - 200) // beats), ((HEIGHT - 200) // instruments)],
                 5,
-                5)
+                5
+            )
             # grid liens between buttons
             pygame.draw.rect(
                 screen,
@@ -108,15 +113,18 @@ def draw_grid(clicked, beat):
                 [i * ((WIDTH - 200) // beats) + 200, (j * 100),
                     ((WIDTH - 200) // beats), ((HEIGHT - 200) // instruments)],
                 2,
-                5)
+                5
+            )
             boxes.append((rect, (i, j)))
         # moving rectangle highlighting active beat
     active = pygame.draw.rect(
         screen,
         blue,
-        [beat * ((WIDTH-200)//beats) + 200, 0, ((WIDTH-200)//beats), instruments*100], 
-        5, 
-        3)
+        [beat * ((WIDTH-200)//beats) + 200, 0,
+         ((WIDTH-200)//beats), instruments*100],
+        5,
+        3
+    )
     return boxes
 
 
@@ -126,21 +134,54 @@ while run:
     timer.tick(fps)
     screen.fill(black)
     boxes = draw_grid(clicked, active_beat)
-    
+
     # lower menu buttons (should i put near draw_grid?)
-    play_pause = pygame.draw.rect(screen, gray, [50, HEIGHT - 150, 200, 100], 0, 5)
+    play_pause = pygame.draw.rect(
+        screen, gray, [50, HEIGHT - 150, 200, 100], 0, 5)
     play_text = label_font.render('Play/Pause', True, white)
-    screen.blit(play_text, (70, HEIGHT - 150))    
+    screen.blit(play_text, (70, HEIGHT - 150))
     if playing:
         play_text2 = medium_font.render('Playing', True, dark_gray)
     else:
         play_text2 = medium_font.render('Paused', True, dark_gray)
     screen.blit(play_text2, (70, HEIGHT - 100))
 
+    # 'bpm stuff'
+    bpm_rect = pygame.draw.rect(
+        screen,
+        gray,
+        [300, HEIGHT - 150, 200, 100],
+        5,
+        5
+    )
+    bpm_text = medium_font.render('Beats Per Minute', True, white)
+    screen.blit(bpm_text, (308, HEIGHT - 145))
+    bpm_text2 = label_font.render(f'{bpm}', True, white)
+    screen.blit(bpm_text2, (370, HEIGHT - 115))
+    bpm_add_rect = pygame.draw.rect(
+        screen,
+        gray,
+        [510, HEIGHT - 150, 48, 48],
+        0,
+        5
+    )
+    bpm_sub_rect = pygame.draw.rect(
+        screen,
+        gray,
+        [510, HEIGHT - 98, 48, 48],
+        0,
+        5
+    )
+    bpm_add_text = medium_font.render('+5', True, white)
+    bpm_sub_text = medium_font.render('-5', True, white)
+    screen.blit(bpm_add_text, (520, HEIGHT - 152))
+    screen.blit(bpm_sub_text, (524, HEIGHT - 102))
+
     if beat_changed:
         play_notes()
         beat_changed = False
 
+    # user-action events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -165,9 +206,11 @@ while run:
             active_length = 0
             if active_beat < beats - 1:
                 active_beat += 1
+                print('curr_beat = {}'.format(active_beat))
                 beat_changed = True
             else:
                 active_beat = 0
+                print('curr_beat = {}'.format(active_beat))
                 beat_changed = True
 
     pygame.display.flip()
