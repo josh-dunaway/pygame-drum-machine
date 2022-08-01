@@ -85,6 +85,7 @@ def draw_grid(clicked, beat):
                 color = gray
             else:
                 color = green
+            # drum pad buttons
             rect = pygame.draw.rect(
                 screen,
                 color,
@@ -92,6 +93,7 @@ def draw_grid(clicked, beat):
                     ((WIDTH - 200) // beats) - 10, ((HEIGHT - 200) // instruments) - 10],
                 0,
                 3)
+            # drum pad button inner highlight
             pygame.draw.rect(
                 screen,
                 gold,
@@ -99,6 +101,7 @@ def draw_grid(clicked, beat):
                     ((WIDTH - 200) // beats), ((HEIGHT - 200) // instruments)],
                 5,
                 5)
+            # grid liens between buttons
             pygame.draw.rect(
                 screen,
                 black,
@@ -107,14 +110,13 @@ def draw_grid(clicked, beat):
                 2,
                 5)
             boxes.append((rect, (i, j)))
-        active = pygame.draw.rect(
-            screen,
-            blue,
-            [beat * ((WIDTH-200)//beats) + 200,
-             0,
-             ((WIDTH-200)//beats), instruments*100], 
-             5, 
-             3)
+        # moving rectangle highlighting active beat
+    active = pygame.draw.rect(
+        screen,
+        blue,
+        [beat * ((WIDTH-200)//beats) + 200, 0, ((WIDTH-200)//beats), instruments*100], 
+        5, 
+        3)
     return boxes
 
 
@@ -124,6 +126,7 @@ while run:
     timer.tick(fps)
     screen.fill(black)
     boxes = draw_grid(clicked, active_beat)
+    
     # lower menu buttons (should i put near draw_grid?)
     play_pause = pygame.draw.rect(screen, gray, [50, HEIGHT - 150, 200, 100], 0, 5)
     play_text = label_font.render('Play/Pause', True, white)
