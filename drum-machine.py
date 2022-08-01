@@ -28,6 +28,32 @@ active_length = 0
 active_beat = 1
 beat_changed = True
 
+# load in sounds
+hi_hat = mixer.Sound('sounds\hi hat.WAV')
+snare = mixer.Sound('sounds\snare.WAV')
+kick = mixer.Sound('sounds\kick.WAV')
+crash = mixer.Sound('sounds\crash.WAV')
+clap = mixer.Sound('sounds\clap.WAV')
+tom = mixer.Sound('sounds\\tom.WAV')
+
+# pygame defaults to 8 channels which could lead to issues later
+pygame.mixer.set_num_channels(instruments * 3)
+
+def play_notes():
+    for i in range(len(clicked)):
+        if clicked[i][active_beat] == 1:
+            if i == 0:
+                hi_hat.play()
+            if i == 1:
+                snare.play()
+            if i == 2:
+                kick.play()
+            if i == 3:
+                crash.play()
+            if i == 4:
+                clap.play()
+            if i == 5:
+                tom.play()
 
 def draw_grid(clicked, beat):
     left_box = pygame.draw.rect(screen, gray, [0, 0, 200, HEIGHT - 195], 5)
@@ -47,6 +73,7 @@ def draw_grid(clicked, beat):
     screen.blit(clap_text, (30, 430))
     floor_tom_text = label_font.render('Floor Tom', True, white)
     screen.blit(floor_tom_text, (30, 530))
+
     for i in range(1, instruments):
         pygame.draw.line(screen, gray, (0, i * 100), (195, i * 100), 3)
 
@@ -95,6 +122,9 @@ while run:
     timer.tick(fps)
     screen.fill(black)
     boxes = draw_grid(clicked, active_beat)
+    if beat_changed:
+        play_notes()
+        beat_changed = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
