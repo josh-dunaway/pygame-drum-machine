@@ -261,6 +261,8 @@ while run:
                 beats -= 1
                 for i in range(len(clicked)):
                     clicked[i].pop(-1)
+            elif clear_button.collidepoint(event.pos):
+                clicked = [[-1 for _ in range(beats)] for _ in range(instruments)]
             for i in range(len(instrument_rects)):
                 if instrument_rects[i].collidepoint(event.pos):
                     active_channels[i] *= -1
