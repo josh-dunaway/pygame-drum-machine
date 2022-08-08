@@ -16,7 +16,9 @@ blue = (0, 255, 255)
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 pygame.display.set_caption('Drum Machine')
 label_font = pygame.font.Font('Pacifico.ttf', 32)
+menu_label_font = pygame.font.Font('Roboto-Bold.ttf', 32)
 medium_font = pygame.font.Font('Pacifico.ttf', 24)
+menu_medium_font = pygame.font.Font('Roboto-Bold.ttf', 24)
 
 fps = 60
 timer = pygame.time.Clock()
@@ -138,16 +140,20 @@ def draw_grid(clicked, beat, active_channels):
 
 def draw_save_menu():
     pygame.draw.rect(screen, black, [0, 0, WIDTH, HEIGHT])
+    menu_text = menu_label_font.render('SAVE MENU: Enter a name for current beat', True, white)
+    screen.blit(menu_text, (400, 40))
     exit_btn = pygame.draw.rect(screen, gray, [WIDTH-200, HEIGHT-100, 180, 90], 0, 5)
     exit_txt = label_font.render('Close', True, white)
-    screen.blit(exit_txt, (WIDTH-160, HEIGHT-70))
+    screen.blit(exit_txt, (WIDTH-160, HEIGHT-85))
     return exit_btn
 
 def draw_load_menu():
     pygame.draw.rect(screen, black, [0, 0, WIDTH, HEIGHT])
+    menu_text = menu_label_font.render('LOAD MENU: Enter a name for current beat', True, white)
+    screen.blit(menu_text, (400, 40))
     exit_btn = pygame.draw.rect(screen, gray, [WIDTH-200, HEIGHT-100, 180, 90], 0, 5)
     exit_txt = label_font.render('Close', True, white)
-    screen.blit(exit_txt, (WIDTH-160, HEIGHT-70))
+    screen.blit(exit_txt, (WIDTH-160, HEIGHT-85))
     return exit_btn
 
 # game loop
