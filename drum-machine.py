@@ -225,6 +225,11 @@ while run:
     load_text = label_font.render('Load Beat', True, white)
     screen.blit(load_text, (920, HEIGHT - 110))
 
+    # clear board rect
+    clear_button = pygame.draw.rect(screen, gray, [1150, HEIGHT - 150, 200, 100], 0, 5)
+    clear_text = label_font.render('Clear Board', True, white)
+    screen.blit(clear_text, (1160, HEIGHT - 130))
+
     if beat_changed:
         play_notes()
         beat_changed = False
