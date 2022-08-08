@@ -47,7 +47,6 @@ def play_notes():
         if clicked[i][active_beat] == 1:
             if i == 0:
                 hi_hat.play()
-                print('hi_hat play')
             if i == 1:
                 snare.play()
             if i == 2:
@@ -196,6 +195,10 @@ while run:
                     playing = False
                 elif not playing:
                     playing = True
+            elif bpm_add_rect.collidepoint(event.pos):
+                bpm += 5
+            elif bpm_sub_rect.collidepoint(event.pos):
+                bpm -= 5
 
     beat_length = 3600 // bpm
 
@@ -206,11 +209,9 @@ while run:
             active_length = 0
             if active_beat < beats - 1:
                 active_beat += 1
-                print('curr_beat = {}'.format(active_beat))
                 beat_changed = True
             else:
                 active_beat = 0
-                print('curr_beat = {}'.format(active_beat))
                 beat_changed = True
 
     pygame.display.flip()
