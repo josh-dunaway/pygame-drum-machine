@@ -8,6 +8,7 @@ HEIGHT = 800
 black = (0, 0, 0)
 white = (255, 255, 255)
 gray = (128, 128, 128)
+light_gray = (170, 170, 170)
 dark_gray = (50, 50, 50)
 green = (0, 255, 0)
 gold = (212, 175, 55)
@@ -40,6 +41,7 @@ for line in file:
     saved_beats.append(line)
 beat_name = ''
 typing = False
+index = 100
 
 
 # load in sounds
@@ -158,7 +160,10 @@ def draw_save_menu(beat_name, typing):
     screen.blit(exit_txt, (WIDTH-160, HEIGHT-85))
     return exit_btn, menu_save_btn, entry_rect
 
-def draw_load_menu():
+def draw_load_menu(index):
+    loaded_clicked = []
+    loaded_beats = 0
+    loaded_bpm = 0
     pygame.draw.rect(screen, black, [0, 0, WIDTH, HEIGHT])
     menu_text = menu_label_font.render('LOAD MENU: Select a beat', True, white)
     screen.blit(menu_text, (510, 40))
@@ -172,6 +177,8 @@ def draw_load_menu():
     exit_txt = label_font.render('Close', True, white)
     screen.blit(exit_txt, (WIDTH-160, HEIGHT-85))
     loaded_rectangle = pygame.draw.rect(screen, gray, [190, 90, 1000, 600], 5, 5)
+    if 0 <= index < len(saved_beats):
+        pygame.draw.rect(screen, light_gray, [190, 100 + index*50, 1000, 50])
     for beat in range(len(saved_beats)):
         if beat < 10:
             beat_clicked = []
@@ -181,8 +188,22 @@ def draw_load_menu():
             name_index_end = saved_beats[beat].index(', beats:')
             name_text = medium_font.render(saved_beats[beat][name_index_start:name_index_end], True, white)
             screen.blit(name_text, (240, 100 + beat*50))
-        if 0 <= index < len(saved_beats)
-    return exit_btn, menu_load_btn, menu_delete_btn, loaded_rectangle
+        if 0 <= index < len(saved_beats) and beat == index:
+            beat_index_end = saved_beats[beat].index(', bpm:')
+            loaded_beats = int(saved_beats[beat][name_index_end + 8:beat_index_end])
+            bpm_index_end = saved_beats[beat].index(', selected:')
+            loaded_bpm = int(saved_beats[beat][beat_index_end + 6:bpm_index_end])
+            loaded_clicks_string = saved_beats[beat][bpm_index_end + 14:-3]
+            loaded_clicks_rows = list(loaded_clicks_string.split('], ['))
+            for row in range(len(loaded_clicks_rows)):
+                loaded_clicks_row = loaded_clicks_rows[row].split(', ')
+                for item in range(len(loaded_clicks_row)):
+                    if loaded_clicks_row[item] == '1' or loaded_clicks_row[item] == '-1':
+                        loaded_clicks_row[item] = int(loaded_clicks_row[item])
+                beat_clicked.append(loaded_clicks_row)
+                loaded_clicked = beat_clicked
+    loaded_info = [loaded_beats, loaded_bpm, loaded_clicked]
+    return exit_btn, menu_load_btn, menu_delete_btn, loaded_rectangle, loaded_info
 
 # game loop
 run = True
@@ -287,7 +308,7 @@ while run:
     if save_menu:
         menu_exit_button, menu_save_button, entry_rectangle = draw_save_menu(beat_name, typing)
     if load_menu:
-        menu_exit_button, menu_load_button, menu_delete_button, loaded_rect = draw_load_menu()
+        menu_exit_button, menu_load_button, menu_delete_button, loaded_rect, loaded_info = draw_load_menu(index)
 
     if beat_changed:
         play_notes()
@@ -336,6 +357,19 @@ while run:
                 playing = True
                 beat_name = ''
                 typing = False
+            elif loaded_rect.collidepoint(event.pos):
+                index = (event.pos[1] - 100) // 50
+            elif menu_delete_button.collidepoint(event.pos):
+                if 0 <= index < len(saved_beats):
+                    saved_beats.pop(index)
+            elif menu_load_button.collidepoint(event.pos):
+                if 0 <= index < len(saved_beats):
+                    print(f'loaded info = {loaded_info}')
+                    beats = loaded_info[0]
+                    bpm = loaded_info[1]
+                    clicked = loaded_info[2]
+                    index = 100
+                    load_menu = False
             elif entry_rectangle.collidepoint(event.pos):
                 if typing:
                     typing = False
